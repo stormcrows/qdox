@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <title>qdoc Interaction</title>
+    <style>
+        .ui {
+            display: inline
+        }
+        .results {
+            margin: 5px;
+            margin-top: 10px;
+            line-height: 28px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .error {
+            list-style: none;
+            color: #dd0000;
+        }
+        .nomatch {
+            list-style: none;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Search Documents</h1>
+    <div class="ui">
+        <div class="query">
+            <label for="queryTf">Query:</label>
+            <input type="text" id="queryTf" value="" />
+            <input type="button" id="submitBtn" value="Submit" onclick="sendQuery(event)" >
+        </div>
+        <div class="options">
+            <label for="nSel">N:</label>
+            <select name="nSel" id="nSel">
+                {{ range $n := .NSelection }}
+                <option value="{{ $n }}" {{ if eq $n 3 }}selected="selected"{{ end }}>{{ $n }}</option>
+                {{ end }}
+            </select>
+
+            <label for="thresholdSel">threshold:</label>
+            <select name="thresholdSel" id="thresholdSel">
+                {{ range $t := .TSelection }}
+                <option value="{{ $t }}" {{ if eq 0.3 $t }}selected="selected"{{ end }}>{{ $t }}</option>
+                {{ end }}
+            </select>
+        </div>
+    </div>
+
+    <ul id="resultsUl" class="results">
+    </ul>
+
+    <script>
+        var sendQuery = (function(window){
+            var doc = window.document
+            var queryTf = doc.getElementById("queryTf")
+            var thresholdSel = doc.getElementById("thresholdSel")
+            var nSel = doc.getElementById("nSel")
+            var resultsUl = doc.getElementById("resultsUl")
+
+            function sendQuery(e) {
+                if (!queryTf.value) return
+
+                while(resultsUl.firstChild) {
+                    resultsUl.removeChild(resultsUl.firstChild)
+                }
+
+                fetch("/query/?q=" + queryTf.value + 
+                    "&n=" + nSel.options[nSel.selectedIndex].value +
+                    "&threshold=" + thresholdSel.options[thresholdSel.selectedIndex].value)
+
+                    .then(function(e) {
+                        e.json()
+                            .then(function(body) {
+                                if (body.Results.length === 0) {
+                                    var li = doc.createElement("li")
+                                    li.innerText = "No matches found!"
+                                    li.classList = ["nomatch"]
+                                    resultsUl.appendChild(li)
+                                    return
+                                }
+                                body.Results.forEach(function(result) {
+                                    var li = doc.createElement("li")
+                                    var a = doc.createElement("a")
+                                    a.href = result.Path
+                                    a.innerText = result.Path
+                                    var simSpan = doc.createElement("span")
+                                    simSpan.innerText = result.Similarity + "% "
+                                    li.appendChild(simSpan)
+                                    li.appendChild(a)
+                                    resultsUl.appendChild(li)
+                                })
+                            })
+                            .catch(printError)
+                    })
+                    .catch(printError)
+            }
+
+            queryTf.addEventListener("keydown", function (e) {
+                if (e.keyCode === 13) sendQuery()
+            });
+
+            function printError(event) {
+                var li = doc.createElement("li")
+                li.classList = ["error"]
+                li.innerText = event.toString()
+                resultsUl.appendChild(li)
+                console.error(event)
+            }
+
+            return sendQuery
+        })(window)
+    </script>
+
+    </body>
+</html>
