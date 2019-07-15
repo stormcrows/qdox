@@ -1,7 +1,7 @@
 
 # QDOC
 
-CLI tool that uses LSI, machine learning algorithm to process folders of documents to answer queries. It also offers a server that responds with JSON and allows for static document browsing.
+CLI tool that uses LSI, machine learning algorithm to process folders of documents and answers queries. It also offers a server that responds with JSON and provides convenient way of browsing documents.
 
 ---
 
@@ -17,7 +17,7 @@ go install github.com/stormcrows/qdoc
 
 ## Usage
 
-```bash
+```
 COMMANDS:
      search   qdoc search [folder] [query]
      serve    qdoc serve [folder]
@@ -28,7 +28,7 @@ COMMANDS:
 
 ## search folders
 
-```bash
+```
 NAME:
    qdoc search - qdoc search [command options] [folder] [query]
 
@@ -51,7 +51,7 @@ returns:
 
 ## http serve query and documents
 
-```bash
+```
 NAME:
    qdoc serve - qdoc serve [command options] [folder]
 
@@ -79,8 +79,7 @@ and receive JSON response:
     "Results": [{
         "Path": "static/Grand Teton National Park.txt",
         "Similarity": "92"
-    },
-    {
+    }, {
         "Path": "static/Around the End - Ralph Henry Barbour.txt",
         "Similarity": "40"
     }]
@@ -92,6 +91,15 @@ and receive JSON response:
 * `-i` flag will enable a simple query ui to be found under index page of `http://localhost:8080/`:
 
 ![interaction panel](./docs/interaction.png)
+
+---
+
+## Dependencies
+
+- github.com/urfave/cli
+- github.com/valyala/fasthttp
+- gonum.org/v1/gonum/mat
+- github.com/james-bowman/nlp
 
 ---
    
