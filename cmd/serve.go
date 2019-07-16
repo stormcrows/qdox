@@ -14,9 +14,9 @@ import (
 
 	"github.com/buaazp/fasthttprouter"
 
-	"github.com/stormcrows/qdoc/internal"
+	"github.com/stormcrows/qdox/internal"
 
-	"github.com/stormcrows/qdoc/pkg/watcher"
+	"github.com/stormcrows/qdox/pkg/watcher"
 
 	"github.com/urfave/cli"
 	"github.com/valyala/fasthttp"
@@ -46,7 +46,7 @@ var (
 // Serve command trains on corpus from the provided folder and then serves /query requests via http
 var Serve = cli.Command{
 	Name:  "serve",
-	Usage: "qdoc serve [command options] [folder]",
+	Usage: "qdox serve [command options] [folder]",
 	Flags: []cli.Flag{
 		cli.IntFlag{
 			Name:        "port, p",
@@ -147,7 +147,7 @@ var Serve = cli.Command{
 		}
 
 		// serve
-		fmt.Printf("qdoc listening on port: %d\n", port)
+		fmt.Printf("qdox listening on port: %d\n", port)
 		return fasthttp.ListenAndServe(fmt.Sprintf(":%d", port), router.Handler)
 	},
 }

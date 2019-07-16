@@ -3,7 +3,7 @@ package cmd
 import (
 	"regexp"
 
-	"github.com/stormcrows/qdoc/pkg/nlp"
+	"github.com/stormcrows/qdox/pkg/nlp"
 )
 
 var (

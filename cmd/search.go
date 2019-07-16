@@ -11,7 +11,7 @@ import (
 // Search command loads the corpus, trains the model and returns with the results on the terminal
 var Search = cli.Command{
 	Name:  "search",
-	Usage: "qdoc search [command options] [folder] [query]",
+	Usage: "qdox search [command options] [folder] [query]",
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:        "pattern, P",

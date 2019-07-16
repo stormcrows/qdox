@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/radovskyb/watcher"
-	"github.com/stormcrows/qdoc/pkg/nlp"
+	"github.com/stormcrows/qdox/pkg/nlp"
 )
 
 // FileHandler updates corpus and model on observed folder's changes

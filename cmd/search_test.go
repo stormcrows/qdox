@@ -11,7 +11,7 @@ func TestSearch(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
-	app.Run([]string{"qdoc", "search", "../books/", "wild weekend"})
+	app.Run([]string{"qdox", "search", "../books/", "wild weekend"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n40% \"../books/Around the End - Ralph Henry Barbour.txt\"\n"
 	out := buf.String()
@@ -25,7 +25,7 @@ func TestSearchWithDifferentN(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
-	app.Run([]string{"qdoc", "search", "../books/", "wild weekend", "-n", "1"})
+	app.Run([]string{"qdox", "search", "../books/", "wild weekend", "-n", "1"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n"
 	out := buf.String()
@@ -39,7 +39,7 @@ func TestSearchWithDifferentThreshold(t *testing.T) {
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
-	app.Run([]string{"qdoc", "search", "../books/", "wild weekend", "-t", "0.5"})
+	app.Run([]string{"qdox", "search", "../books/", "wild weekend", "-t", "0.5"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n"
 	out := buf.String()

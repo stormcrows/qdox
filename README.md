@@ -1,16 +1,16 @@
 
-# QDOC
+# QDOX
 
-CLI tool that uses LSI, machine learning algorithm to process folders of documents and answers queries. It also offers a server that responds with JSON and provides convenient way of browsing documents.
+CLI tool that uses NLP (machine learning for natural language processing) to process folders of documents and answer queries about them. It also offers a server that responds with JSON and provides convenient way of browsing documents.
 
 ---
 
 ## Installation
 
 ```bash
-go get github.com/stormcrows/qdoc
+go get github.com/stormcrows/qdox
 
-go install github.com/stormcrows/qdoc
+go install github.com/stormcrows/qdox
 ```
 
 ---
@@ -19,8 +19,8 @@ go install github.com/stormcrows/qdoc
 
 ```
 COMMANDS:
-     search   qdoc search [folder] [query]
-     serve    qdoc serve [folder]
+     search   qdox search [folder] [query]
+     serve    qdox serve [folder]
      help, h  Shows a list of commands or help for one command
 ```
 
@@ -30,7 +30,7 @@ COMMANDS:
 
 ```
 NAME:
-   qdoc search - qdoc search [command options] [folder] [query]
+   qdox search - qdox search [command options] [folder] [query]
 
 OPTIONS:
    --pattern value, -P value    only parse files matching regular expression (default: "\\.txt$")
@@ -39,7 +39,7 @@ OPTIONS:
 ```
 example:
 ```bash
-qdoc search ./books/ "knight of valour"
+qdox search ./books/ "knight of valour"
 ```
 returns:
 
@@ -53,7 +53,7 @@ returns:
 
 ```
 NAME:
-   qdoc serve - qdoc serve [command options] [folder]
+   qdox serve - qdox serve [command options] [folder]
 
 OPTIONS:
    --port value, -p value                starts serving at given port (default: 8080)
@@ -66,7 +66,7 @@ OPTIONS:
 example:
 
 ```bash
-qdoc serve ./books/
+qdox serve ./books/
 ```
 
 now make a call to `http://localhost:8080/query?q=wild+weekend&n=3&threshold=0.3`
