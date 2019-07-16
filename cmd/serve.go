@@ -14,8 +14,6 @@ import (
 
 	"github.com/buaazp/fasthttprouter"
 
-	"github.com/stormcrows/qdox/internal"
-
 	"github.com/stormcrows/qdox/pkg/watcher"
 
 	"github.com/urfave/cli"
@@ -100,7 +98,7 @@ var Serve = cli.Command{
 		if watcherEnabled {
 			watcher := &watcher.Watcher{
 				MaxEvents: 10,
-				Handler:   internal.FileHandler(folder, patternr, &corpus, model),
+				Handler:   watcher.FileHandler(folder, patternr, &corpus, model),
 				Folder:    folder,
 				Interval:  time.Millisecond * time.Duration(interval),
 				Pattern:   patternr,
