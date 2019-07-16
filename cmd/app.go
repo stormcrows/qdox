@@ -1,7 +1,6 @@
-package main
+package cmd
 
 import (
-	"github.com/stormcrows/qdox/cmd"
 	"github.com/urfave/cli"
 )
 
@@ -13,7 +12,7 @@ func NewApp() *cli.App {
 	app.UsageText = "qdox [global options] command [command options] [arguments...]"
 	app.Author = "Stormcrows"
 	app.Version = "1.0.0"
-	app.Commands = []cli.Command{cmd.Search, cmd.Serve}
+	app.Commands = []cli.Command{Search, Serve}
 
 	return app
 }

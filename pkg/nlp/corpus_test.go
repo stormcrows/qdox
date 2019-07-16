@@ -8,7 +8,7 @@ import (
 func TestLoad(t *testing.T) {
 	c := NewCorpus()
 	r := regexp.MustCompile("\\.txt")
-	err := c.Load("../../docs", r)
+	err := c.Load("../../books", r)
 	if err != nil {
 		t.Errorf("error reading folder %s", err.Error())
 	}
@@ -30,7 +30,7 @@ func TestLoad(t *testing.T) {
 func TestRelease(t *testing.T) {
 	c := NewCorpus()
 	r := regexp.MustCompile("\\.txt")
-	err := c.Load("../../docs", r)
+	err := c.Load("../../books", r)
 	if err != nil {
 		t.Errorf("error reading folder %s", err.Error())
 	}
@@ -49,7 +49,7 @@ func TestRelease(t *testing.T) {
 
 func TestCountDocuments(t *testing.T) {
 	r := regexp.MustCompile("\\.txt")
-	n, err := CountDocuments("../../docs", r)
+	n, err := CountDocuments("../../books", r)
 	if err != nil {
 		t.Errorf("error counting documents: %s", err.Error())
 	}
