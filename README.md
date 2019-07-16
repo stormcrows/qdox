@@ -9,7 +9,6 @@ CLI tool that uses NLP (machine learning for natural language processing) to pro
 
 ```bash
 go get github.com/stormcrows/qdox
-go install github.com/stormcrows/qdox
 ```
 
 ---
