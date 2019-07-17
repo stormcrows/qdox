@@ -4,20 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
 	"regexp"
+	"strconv"
 	"syscall"
 	"text/template"
 	"time"
 
-	"github.com/buaazp/fasthttprouter"
-
 	"github.com/stormcrows/qdox/pkg/watcher"
 
 	"github.com/urfave/cli"
-	"github.com/valyala/fasthttp"
 )
 
 // Result defines a single search result
@@ -136,55 +135,70 @@ var Serve = cli.Command{
 			}()
 		}
 
-		// router
-		router := fasthttprouter.New()
-		router.ServeFiles("/static/*filepath", folder)
-		router.GET("/query", QueryHandler)
+		// routes
+		fs := http.StripPrefix("/static/", http.FileServer(http.Dir(folder)))
+		http.Handle("/static/", fs)
 		if interact {
-			router.GET("/", IndexHandler)
+			http.HandleFunc("/", IndexHandler)
 		}
+		http.HandleFunc("/query", QueryHandler)
+		http.HandleFunc("/query/", QueryHandler)
 
 		// serve
 		fmt.Printf("qdox listening on port: %d\n", port)
-		return fasthttp.ListenAndServe(fmt.Sprintf(":%d", port), router.Handler)
+		return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 	},
 }
 
 // IndexHandler displays template in interaction mode
-func IndexHandler(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set("Content-Type", "text/html")
-	Tpl.ExecuteTemplate(ctx, "interaction.gohtml", defaultResponse)
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("woww")
+	w.Header().Set("Content-Type", "text/html")
+	Tpl.ExecuteTemplate(w, "interaction.gohtml", defaultResponse)
 }
 
 // QueryHandler handles search queries and responds with JSON
-func QueryHandler(ctx *fasthttp.RequestCtx) {
+func QueryHandler(w http.ResponseWriter, r *http.Request) {
 	// args
-	query := string(ctx.QueryArgs().Peek("q"))
-	if query == "" {
-		respondErr(400, "q param is missing, usage: /query?q=find%20me%somebody%20to%20love", ctx)
+	var err error
+	args := r.URL.Query()
+
+	q := args.Get("q")
+	if q == "" {
+		respond(http.StatusBadRequest, "q should be a non empty string", w)
 		return
 	}
 
 	n := 5
-	if ctx.QueryArgs().GetUintOrZero("n") > 0 {
-		n = ctx.QueryArgs().GetUintOrZero("n")
+	if args.Get("n") != "" {
+		n, err = strconv.Atoi(args.Get("n"))
+		if err != nil || n < 1 {
+			respond(http.StatusBadRequest, "n should be a positive integer", w)
+			return
+		}
 	}
 
 	threshold := 0.3
-	if ctx.QueryArgs().GetUfloatOrZero("threshold") > 0.0 {
-		threshold = ctx.QueryArgs().GetUfloatOrZero("threshold")
+	if args.Get("threshold") != "" {
+		threshold, err = strconv.ParseFloat(args.Get("threshold"), 64)
+		if err != nil || threshold < 0.0 {
+			respond(http.StatusBadRequest, "threshold should be a non-negative float number", w)
+			return
+		}
 	}
 
+	log.Println(fmt.Sprintf("query=%q, n=%d, t=%.2f", q, n, threshold))
+
 	// nlp query
-	result := model.Query(query, n, threshold)
+	result := model.Query(q, n, threshold)
 	if result.Err != nil {
 		log.Println(fmt.Sprintf("query error: %s", result.Err))
-		respondErr(500, "", ctx)
+		respond(http.StatusInternalServerError, "", w)
 		return
 	}
 
 	// response
-	resp := QueryResponse{query, make([]Result, len(result.Matched))}
+	resp := QueryResponse{q, make([]Result, len(result.Matched))}
 
 	for i, v := range result.Matched {
 		similarity := fmt.Sprintf("%.0f", result.Similarities[i]*100.0)
@@ -192,21 +206,24 @@ func QueryHandler(ctx *fasthttp.RequestCtx) {
 		resp.Results[i] = Result{path, similarity}
 	}
 
-	jresp, err := json.Marshal(resp)
+	body, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(fmt.Sprintf("json marshalling error: %s", result.Err))
-		respondErr(500, "", ctx)
+		respond(http.StatusInternalServerError, "", w)
 		return
 	}
 
-	ctx.Response.Header.Set("Content-Type", "application/json")
-	fmt.Fprintln(ctx, string(jresp))
+	w.Header().Set("Content-Type", "application/json")
+	respond(http.StatusOK, string(body), w)
+
+	log.Println(fmt.Sprintf("response: %s", string(body)))
 }
 
-func respondErr(statusCode int, body string, ctx *fasthttp.RequestCtx) {
+func respond(code int, body string, w http.ResponseWriter) {
+	w.WriteHeader(code)
 	if body == "" {
-		ctx.Error(fasthttp.StatusMessage(statusCode), statusCode)
+		fmt.Fprintf(w, http.StatusText(code))
 	} else {
-		ctx.Error(body, statusCode)
+		fmt.Fprintf(w, body)
 	}
 }

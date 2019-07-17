@@ -95,9 +95,9 @@ and receive JSON response:
 ## Dependencies
 
 - github.com/urfave/cli
-- github.com/valyala/fasthttp
 - gonum.org/v1/gonum/mat
 - github.com/james-bowman/nlp
+- github.com/stretchr/testify/assert
 
 ---
    

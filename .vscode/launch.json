@@ -15,14 +15,14 @@
             "args": ["search", "books/", "knight"]
         },
         {
-            "name": "Http",
+            "name": "Serve",
             "type": "go",
             "request": "launch",
-            "trace": "verbose",
+            "trace": "error",
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {},
-            "args": ["http", "books/", "8080"]
+            "args": ["serve", "books/", "9999", "-i"]
         }
     ]
 }

@@ -65,10 +65,11 @@
                     resultsUl.removeChild(resultsUl.firstChild)
                 }
 
-                fetch("/query/?q=" + queryTf.value + 
+                var query = "/query/?q=" + queryTf.value + 
                     "&n=" + nSel.options[nSel.selectedIndex].value +
-                    "&threshold=" + thresholdSel.options[thresholdSel.selectedIndex].value)
-
+                    "&threshold=" + thresholdSel.options[thresholdSel.selectedIndex].value
+                
+                fetch(query)
                     .then(function(e) {
                         e.json()
                             .then(function(body) {
