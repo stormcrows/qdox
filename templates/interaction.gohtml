@@ -82,13 +82,17 @@
                                 }
                                 body.Results.forEach(function(result) {
                                     var li = doc.createElement("li")
-                                    var a = doc.createElement("a")
-                                    a.href = result.Path
-                                    a.innerText = result.Path
                                     var simSpan = doc.createElement("span")
                                     simSpan.innerText = result.Similarity + "% "
                                     li.appendChild(simSpan)
-                                    li.appendChild(a)
+                                    if (result.Path) {
+                                        var a = doc.createElement("a")
+                                        a.href = result.Path
+                                        a.innerText = result.Name
+                                        li.appendChild(a)
+                                    } else {
+                                        simSpan.innerText += result.Name
+                                    }
                                     resultsUl.appendChild(li)
                                 })
                             })

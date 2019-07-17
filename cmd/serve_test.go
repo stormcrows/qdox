@@ -14,11 +14,22 @@ import (
 
 func TestQuery(t *testing.T) {
 	log.SetOutput(ioutil.Discard)
+
+	serveFiles = true
+
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
-			{Path: "static/Grand Teton National Park.txt", Similarity: "92"},
-			{Path: "static/Around the End - Ralph Henry Barbour.txt", Similarity: "40"},
+			{
+				Name:       "Grand Teton National Park.txt",
+				Path:       "static/Grand Teton National Park.txt",
+				Similarity: "92",
+			},
+			{
+				Name:       "Around the End - Ralph Henry Barbour.txt",
+				Path:       "static/Around the End - Ralph Henry Barbour.txt",
+				Similarity: "40",
+			},
 		},
 	}
 
@@ -27,10 +38,17 @@ func TestQuery(t *testing.T) {
 
 func TestQueryWithDifferentN(t *testing.T) {
 	log.SetOutput(ioutil.Discard)
+
+	serveFiles = true
+
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
-			{Path: "static/Grand Teton National Park.txt", Similarity: "92"},
+			{
+				Name:       "Grand Teton National Park.txt",
+				Path:       "static/Grand Teton National Park.txt",
+				Similarity: "92",
+			},
 		},
 	}
 
@@ -39,14 +57,45 @@ func TestQueryWithDifferentN(t *testing.T) {
 
 func TestQueryWithDifferentThreshold(t *testing.T) {
 	log.SetOutput(ioutil.Discard)
+
+	serveFiles = true
+
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
-			{Path: "static/Grand Teton National Park.txt", Similarity: "92"},
+			{
+				Name:       "Grand Teton National Park.txt",
+				Path:       "static/Grand Teton National Park.txt",
+				Similarity: "92",
+			},
 		},
 	}
 
 	testResponse(t, "wild weekend", "5", "0.5", want)
+}
+
+func TestQueryNotServingFiles(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
+
+	serveFiles = false
+
+	want := &QueryResponse{
+		Query: "wild weekend",
+		Results: []Result{
+			{
+				Name:       "Grand Teton National Park.txt",
+				Path:       "",
+				Similarity: "92",
+			},
+			{
+				Name:       "Around the End - Ralph Henry Barbour.txt",
+				Path:       "",
+				Similarity: "40",
+			},
+		},
+	}
+
+	testResponse(t, "wild weekend", "5", "0.3", want)
 }
 
 func TestParamsErrors(t *testing.T) {

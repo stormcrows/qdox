@@ -21,6 +21,7 @@ import (
 
 // Result defines a single search result
 type Result struct {
+	Name       string
 	Path       string
 	Similarity string
 }
@@ -56,6 +57,11 @@ var Serve = cli.Command{
 			Usage:       "parse files matching given regexp pattern",
 			Destination: &pattern,
 			Value:       "\\.txt$",
+		},
+		cli.BoolFlag{
+			Name:        "serve-documents, s",
+			Usage:       "serves documents under /static path",
+			Destination: &serveFiles,
 		},
 		cli.BoolFlag{
 			Name:        "watcher, w",
@@ -136,8 +142,10 @@ var Serve = cli.Command{
 		}
 
 		// routes
-		fs := http.StripPrefix("/static/", http.FileServer(http.Dir(folder)))
-		http.Handle("/static/", fs)
+		if serveFiles {
+			fs := http.StripPrefix("/static/", http.FileServer(http.Dir(folder)))
+			http.Handle("/static/", fs)
+		}
 		if interact {
 			http.HandleFunc("/", IndexHandler)
 		}
@@ -152,7 +160,7 @@ var Serve = cli.Command{
 
 // IndexHandler displays template in interaction mode
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("woww")
+	log.Println(fmt.Sprintf("new connection: %s", r.RemoteAddr))
 	w.Header().Set("Content-Type", "text/html")
 	Tpl.ExecuteTemplate(w, "interaction.gohtml", defaultResponse)
 }
@@ -187,7 +195,7 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Println(fmt.Sprintf("query=%q, n=%d, t=%.2f", q, n, threshold))
+	log.Println(fmt.Sprintf("ip=%s, query=%q, n=%d, t=%.2f", r.RemoteAddr, q, n, threshold))
 
 	// nlp query
 	result := model.Query(q, n, threshold)
@@ -201,9 +209,16 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 	resp := QueryResponse{q, make([]Result, len(result.Matched))}
 
 	for i, v := range result.Matched {
-		similarity := fmt.Sprintf("%.0f", result.Similarities[i]*100.0)
-		path := fmt.Sprintf("static/%s", path.Base(model.Corpus.GetPath(v)))
-		resp.Results[i] = Result{path, similarity}
+		name := path.Base(model.Corpus.GetPath(v))
+		path := ""
+		if serveFiles {
+			path = fmt.Sprintf("static/%s", name)
+		}
+		resp.Results[i] = Result{
+			name,
+			path,
+			fmt.Sprintf("%.0f", result.Similarities[i]*100.0),
+		}
 	}
 
 	body, err := json.Marshal(resp)

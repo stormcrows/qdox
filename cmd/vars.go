@@ -12,6 +12,7 @@ var (
 	model          = nlp.NewLSIModel()
 	n              = 5
 	threshold      = 0.3
+	serveFiles     = false
 	interact       = false
 	watcherEnabled = false
 	interval       = int64(1000)

@@ -41,7 +41,7 @@ example:
 ```bash
 qdox search ./books/ "knight of valour"
 ```
-returns:
+outputs:
 
 ```bash
 82% "books/Around the End - Ralph Henry Barbour.txt"
@@ -52,12 +52,13 @@ returns:
 ## http serve query and documents
 
 ```
-NAME:
-   qdox serve - qdox serve [command options] [folder]
+USAGE:
+   qdox serve [command options] [arguments...]
 
 OPTIONS:
    --port value, -p value                starts serving at given port (default: 8080)
    --pattern value, -P value             parse files matching given regexp pattern (default: "\\.txt$")
+   --serve-documents, -s                 serves documents under /static path
    --watcher, -w                         updates model on observed folder's change
    --watcher-interval value, --wi value  folder update check interval in ms (default: 1000)
    --interact, -i                        simple query ui served at /index level
@@ -77,18 +78,22 @@ and receive JSON response:
 {
     "Query": "wild weekend",
     "Results": [{
+        "Name": "Grand Teton National Park.txt",
         "Path": "static/Grand Teton National Park.txt",
         "Similarity": "92"
     }, {
+        "Name": "Around the End - Ralph Henry Barbour.txt",
         "Path": "static/Around the End - Ralph Henry Barbour.txt",
         "Similarity": "40"
     }]
 }
 ```
+*note: `Path` will be `""` if `-s` option is not specified!*
 
 * Documents are served from `static` folder and can be accessed followed via provided path,
 * `-w` flag will enable a recursive watcher on the folder that will update the model anytime there is a change in the file structure,
 * `-i` flag will enable a simple query ui to be found under index page of `http://localhost:8080/`:
+* `-s` enables serving documents from under the `/static` route
 
 ![interaction panel](./docs/interaction.png)
 
