@@ -23,4 +23,6 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -d ./...
+      - run: go get -v github.com/stretchr/testify/assert
+
       - run: go test -v ./...
