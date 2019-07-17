@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"testing"
 	"text/template"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSearch(t *testing.T) {
@@ -14,10 +16,7 @@ func TestSearch(t *testing.T) {
 	app.Run([]string{"qdox", "search", "../books/", "wild weekend"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n40% \"../books/Around the End - Ralph Henry Barbour.txt\"\n"
-	out := buf.String()
-	if expected != out {
-		t.Errorf("expected: %q, got: %q", expected, out)
-	}
+	assert.Equal(t, expected, buf.String(), "different results")
 }
 
 func TestSearchWithDifferentN(t *testing.T) {
@@ -28,10 +27,7 @@ func TestSearchWithDifferentN(t *testing.T) {
 	app.Run([]string{"qdox", "search", "../books/", "wild weekend", "-n", "1"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n"
-	out := buf.String()
-	if expected != out {
-		t.Errorf("expected: %q, got: %q", expected, out)
-	}
+	assert.Equal(t, expected, buf.String(), "different results")
 }
 
 func TestSearchWithDifferentThreshold(t *testing.T) {
@@ -42,8 +38,5 @@ func TestSearchWithDifferentThreshold(t *testing.T) {
 	app.Run([]string{"qdox", "search", "../books/", "wild weekend", "-t", "0.5"})
 
 	expected := "92% \"../books/Grand Teton National Park.txt\"\n"
-	out := buf.String()
-	if expected != out {
-		t.Errorf("expected: %q, got: %q", expected, out)
-	}
+	assert.Equal(t, expected, buf.String(), "different results")
 }
