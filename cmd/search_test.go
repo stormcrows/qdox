@@ -3,13 +3,11 @@ package cmd
 import (
 	"bytes"
 	"testing"
-	"text/template"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSearch(t *testing.T) {
-	Tpl = template.Must(template.ParseGlob("../templates/*.gohtml"))
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
@@ -20,7 +18,6 @@ func TestSearch(t *testing.T) {
 }
 
 func TestSearchWithDifferentN(t *testing.T) {
-	Tpl = template.Must(template.ParseGlob("../templates/*.gohtml"))
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
@@ -31,7 +28,6 @@ func TestSearchWithDifferentN(t *testing.T) {
 }
 
 func TestSearchWithDifferentThreshold(t *testing.T) {
-	Tpl = template.Must(template.ParseGlob("../templates/*.gohtml"))
 	app := NewApp()
 	buf := new(bytes.Buffer)
 	app.Writer = buf
