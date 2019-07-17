@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -12,6 +13,7 @@ import (
 )
 
 func TestQuery(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
@@ -24,6 +26,7 @@ func TestQuery(t *testing.T) {
 }
 
 func TestQueryWithDifferentN(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
@@ -35,6 +38,7 @@ func TestQueryWithDifferentN(t *testing.T) {
 }
 
 func TestQueryWithDifferentThreshold(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
 	want := &QueryResponse{
 		Query: "wild weekend",
 		Results: []Result{
@@ -46,6 +50,7 @@ func TestQueryWithDifferentThreshold(t *testing.T) {
 }
 
 func TestParamsErrors(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
 	testParamsError(t, "", "", "")
 	// query
 	testParamsError(t, "", "5", "0.3")
@@ -57,6 +62,7 @@ func TestParamsErrors(t *testing.T) {
 }
 
 func TestParamsOK(t *testing.T) {
+	log.SetOutput(ioutil.Discard)
 	testParamsOK(t, "this is fine", "1", "0.0")
 	testParamsOK(t, "default all", "", "")
 	testParamsOK(t, "default threshold", "1", "")
