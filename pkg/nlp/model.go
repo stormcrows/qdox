@@ -57,13 +57,11 @@ func (m *Model) Query(q string, n int, threshold float64) QueryResult {
 	_, docs := m.Matrix.Dims()
 	matched := make([]int, 0)
 	similarities := make([]float64, 0)
-	maxSimilarity := -1.0
 	for i := 0; i < docs; i++ {
-		similarity := pairwise.CosineSimilarity(queryVector.(mat.ColViewer).ColView(0), m.Matrix.(mat.ColViewer).ColView(i))
-		if similarity >= threshold && similarity >= maxSimilarity {
-			maxSimilarity = similarity
+		s := pairwise.CosineSimilarity(queryVector.(mat.ColViewer).ColView(0), m.Matrix.(mat.ColViewer).ColView(i))
+		if s >= threshold {
 			matched = append(matched, i)
-			similarities = append(similarities, similarity)
+			similarities = append(similarities, s)
 		}
 	}
 
