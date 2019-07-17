@@ -67,7 +67,7 @@ OPTIONS:
 example:
 
 ```bash
-qdox serve ./books/
+qdox serve ./books/ -s
 ```
 
 now make a call to `http://localhost:8080/query?q=wild+weekend&n=3&threshold=0.3`
