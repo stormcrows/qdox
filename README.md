@@ -1,6 +1,8 @@
 
 # QDOX
 
+[![CircleCI](https://circleci.com/gh/stormcrows/qdox/tree/master.svg?style=svg)](https://circleci.com/gh/stormcrows/qdox/tree/master)
+
 CLI tool that uses NLP (machine learning for natural language processing) to process folders of documents and answer queries about them. It also offers a server that responds with JSON and provides convenient way of browsing documents.
 
 ---
