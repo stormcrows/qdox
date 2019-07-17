@@ -95,7 +95,7 @@ and receive JSON response:
 * `-i` flag will enable a simple query ui to be found under index page of `http://localhost:8080/`:
 * `-s` enables serving documents from under the `/static` route
 
-![interaction panel](./docs/interaction.png)
+![interaction panel](./docs/interaction2.png)
 
 ---
 
